@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>saurOS</title>
     <link rel="stylesheet" href="style.css">
+    <script type="text/javascript" src="https://cdn.rawgit.com/ricmoo/aes-js/e27b99df/index.js"></script>
   </head>
   <body>
     <div id="container">
@@ -21,9 +22,42 @@
   
       <div class="flex">
         <main>
-          <h1><strong>saurOS</strong>: your new favorite operating system</h1>
+          <h1>welcome to my little game... MWAHAHAHA</h1>
+          <p>to claim what is your's... you must find the clues and crack the code to get your prize...</p>
+
+          <h2>THE GAME</h2>
           <p>
-            tired of windows? tired of distro-hopping? it's time to join the only linux distribution with a single user and no support: <strong>saurOS</strong>.
+            you've already found the first clue... the letter.
+          </p>
+          <p>
+            you must follow the rest of the clues to get the passcodes to decode the final clue.
+            once you have the passcodes, enter them below, and clicking submit will try to decode the clue.
+            once you've got it, the prize is as good as yours...
+          </p>
+
+          <p>
+            <label for="pass1">code #1: </label>
+            <input type="text" name="pass1" value="">
+          </p>
+
+          <p>
+            <label for="pass2">code #2: </label>
+            <input type="text" name="pass2" value="">
+          </p>
+
+          <p>
+            <label for="pass3">code #3: </label>
+            <input type="text" name="pass3" value="">
+          </p>
+
+          <p>
+            <label for="pass4">code #4: </label>
+            <input type="text" name="pass4" value="">
+          </p>
+
+          <button onclick="decode()">Try it</button>
+          <p>
+            <strong>clue: </strong><span id="output_code"></span>
           </p>
         </main>
       </div>
@@ -195,6 +229,31 @@
       event.currentTarget.className += " active";
     }
 
-    document.getElementById("default").click();
+    function decode() {
+      var pass1 = document.getElementsByName("pass1")[0].value
+      var pass2 = document.getElementsByName("pass2")[0].value
+      var pass3 = document.getElementsByName("pass3")[0].value
+      var pass4 = document.getElementsByName("pass4")[0].value
+      
+      // var pass = "gingypmpknprtypc";
+      /*
+        if you found this... you found the loophole!
+        still have fun going and finding the clues... but you've gotten around it :)
+      */
+      var pass = pass1 + pass2 + pass3 + pass4;
+      var key = [];
+      for (var i = 0; i < 16; i++) {
+        key.push(pass[i].charCodeAt(0));
+      }
+
+      var encryptedHex = "14be73e2c6893023cd05c3aadd735c1a7138dc201f222a39b77e1e6099caaa4aff21e1d0b62fc0e4fa8df9260151be8a3e545cca7c94e810801d46a824cdada76e41353add12db3e9bb9d441a3600b74c53d454ec0c47b6a7fdc3522952185cc313daa18f4b1361f6f5eb3d2138d19f7bcf4e74716cbabb3adc2fc93d9e38cb53a6370e751ac43a8d379e730e9a7481ad27038743abe40d24843262e103739d185341e5d83fadfa5";
+      var encryptedBytes = aesjs.utils.hex.toBytes(encryptedHex);
+
+      var aesCtr = new aesjs.ModeOfOperation.ctr(key, new aesjs.Counter(5));
+      var decryptedBytes = aesCtr.decrypt(encryptedBytes);
+
+      var decryptedText = aesjs.utils.utf8.fromBytes(decryptedBytes);
+      document.getElementById("output_code").innerHTML = decryptedText;
+    }
   </script>
 </html>
