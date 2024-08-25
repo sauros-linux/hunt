@@ -36,20 +36,33 @@
           </p>
 
           <p>
+            <strong>note:</strong> this is going to take a bit of brainpower...
+            so don't tackle this unless you've got some energy and a bit of drive lol
+          </p>
+
+          <h3>clue #1</h3>
+          <p>Return to your message, as the sender may have a clue.</p>
+          <p>
             <label for="pass1">code #1: </label>
             <input type="text" name="pass1" value="">
           </p>
 
+          <h3>clue #2</h3>
+          <p>A friend is upset about being stowed away, now holding secrets until the weather turns cold.</p>
           <p>
             <label for="pass2">code #2: </label>
             <input type="text" name="pass2" value="">
           </p>
 
+          <h3>clue #3</h3>
+          <p>Once celebrated, now the secret lies with the fading breath in the many hidden in parties past.</p>
           <p>
             <label for="pass3">code #3: </label>
             <input type="text" name="pass3" value="">
           </p>
 
+          <h3>clue #4</h3>
+          <p>A place where you may find much fun and productivity, the virtual scrawl can lead you forward.</p>
           <p>
             <label for="pass4">code #4: </label>
             <input type="text" name="pass4" value="">
@@ -235,22 +248,26 @@
       var pass3 = document.getElementsByName("pass3")[0].value
       var pass4 = document.getElementsByName("pass4")[0].value
       
-      // var pass = "gingypmpknprtypc";
+      // var pass = "pmpkngingyprtypc";
       /*
         if you found this... you found the loophole!
         still have fun going and finding the clues... but you've gotten around it :)
       */
       var pass = pass1 + pass2 + pass3 + pass4;
+      var iv_char = "foryou,mybeloved";
       var key = [];
+      var iv = [];
       for (var i = 0; i < 16; i++) {
         key.push(pass[i].charCodeAt(0));
+        iv.push(iv_char[i].charCodeAt(0));
       }
 
-      var encryptedHex = "14be73e2c6893023cd05c3aadd735c1a7138dc201f222a39b77e1e6099caaa4aff21e1d0b62fc0e4fa8df9260151be8a3e545cca7c94e810801d46a824cdada76e41353add12db3e9bb9d441a3600b74c53d454ec0c47b6a7fdc3522952185cc313daa18f4b1361f6f5eb3d2138d19f7bcf4e74716cbabb3adc2fc93d9e38cb53a6370e751ac43a8d379e730e9a7481ad27038743abe40d24843262e103739d185341e5d83fadfa5";
+      encryptedHex = "0f5073ec7440df84a4378bb44a94a72a0e9da64af4b3e910fa6a79bad25259e42eb3dff2c4e7baeed0c6904710eb4166f98de2d7d50a8a19de21f1c12fdea08dd105dc8f1ac347e76f94d08f8dcb7597434d66fd47b13a3be1cd05f18f8e35361bcd3ac4f27317badcaf5fa42af3890bed273f2f2812136c94655fd181f66fc079f8cf9dc9af1d2eeddc3ecb8a75f35cb74860961a238b79a41c98ed6331428780a84c5534901ad6";
+
       var encryptedBytes = aesjs.utils.hex.toBytes(encryptedHex);
 
-      var aesCtr = new aesjs.ModeOfOperation.ctr(key, new aesjs.Counter(5));
-      var decryptedBytes = aesCtr.decrypt(encryptedBytes);
+      var aesCfb = new aesjs.ModeOfOperation.cfb(key, iv, 1);
+      var decryptedBytes = aesCfb.decrypt(encryptedBytes);
 
       var decryptedText = aesjs.utils.utf8.fromBytes(decryptedBytes);
       document.getElementById("output_code").innerHTML = decryptedText;
